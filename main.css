@@ -1,0 +1,178 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body, html {
+    height: 100%;
+    font-family: 'Playfair Display SC', serif;
+    background-color: #0a0f1a;
+    color: white;
+    overflow: hidden;
+  }
+  
+  /* Video background styles */
+  .background-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+  }
+  
+  .fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+  }
+  
+  .hidden {
+    display: none;
+  }
+  
+  #bullBearCanvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  
+  #homepage {
+    position: relative;
+    padding: 20px 40px;
+    height: 100vh;
+    overflow: hidden;
+    background-color: #0a0f1a;
+  }
+  
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 20px;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    position: relative;
+    z-index: 1;
+  }
+
+  .club-logo {
+    height: 10px;
+    width: 20px;
+    vertical-align: middle;
+    margin-left: 10px;
+    margin-top: 5px;
+  }
+  
+  .nav-links {
+    list-style: none;
+    display: flex;
+    gap: 25px;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .nav-links li a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
+  
+  .nav-links li a:hover {
+    color: #38e93e;
+  }
+  
+  .hero {
+    text-align: center;
+    position: relative;
+    margin-top: 50px;
+    z-index: 1;
+  }
+  
+  .hero.centered-hero {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 60vh;
+  }
+  
+  .hero.centered-hero h1 {
+    font-family: 'Baskerville Old Face', serif;
+    font-size: 6rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+  
+  .hero.centered-hero h3 {
+    font-family: 'Playfair Display SC', serif;
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+  }
+  
+  .hero hr {
+    width: 150px;
+    border: 1px solid white;
+    margin: 0 auto 40px auto;
+  }
+  
+  #stockChartCanvas {
+    width: 100%;
+    height: 200px;
+    max-width: 800px;
+    margin: 0 auto;
+    display: block;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .finance-tip {
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px 30px;
+    border-radius: 8px;
+    max-width: 350px;
+    font-size: 0.9rem;
+    font-style: italic;
+    color: #EEF0F2;
+    font-family: Arial, Helvetica, sans-serif;
+    box-shadow: 0 0 10px #38e93e;
+    z-index: 1;
+  }
+  
+  .finance-tip h4 {
+    margin-bottom: 8px;
+    font-weight: 700;
+    color: #38e93e;
+    font-family: 'Playfair Display SC', serif;
+  }
+
+  /* Sponsor cube container */
+  .sponsor-cube-container {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    width: 120px;
+    height: 120px;
+    z-index: 2;
+  }
+  

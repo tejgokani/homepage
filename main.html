@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bulls and Bears - Premium Finance Club</title>
+  <style>
+    /* Reset and base styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body, html {
+      height: 100%;
+      font-family: 'Playfair Display SC', serif;
+      background-color: #0a0f1a;
+      color: white;
+      overflow: hidden;
+    }
+    
+    /* Video background styles */
+    .background-video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+    
+    .fullscreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    #bullBearCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    
+    #homepage {
+      position: relative;
+      padding: 20px 40px;
+      height: 100vh;
+      overflow: hidden;
+      background-color: #0a0f1a;
+    }
+    
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 20px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .logo {
+      position: relative;
+      z-index: 1;
+    }
+    
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 25px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .nav-links li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    
+    .nav-links li a:hover {
+      color: #38e93e;
+    }
+    
+    .hero {
+      text-align: center;
+      position: relative;
+      margin-top: 50px;
+      z-index: 1;
+    }
+    
+    .hero.centered-hero {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 60vh;
+    }
+    
+    .hero.centered-hero h1 {
+      font-family: 'Baskerville Old Face', serif;
+      font-size: 6rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    
+    .hero.centered-hero h3 {
+      font-family: 'Playfair Display SC', serif;
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+    
+    .hero hr {
+      width: 150px;
+      border: 1px solid white;
+      margin: 0 auto 40px auto;
+    }
+    
+    .finance-tip {
+      position: absolute;
+      bottom: 30px;
+      right: 30px;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 15px 30px;
+      border-radius: 8px;
+      max-width: 350px;
+      font-size: 0.9rem;
+      font-style: italic;
+      color: #EEF0F2;
+      font-family: Arial, Helvetica, sans-serif;
+      /* Removed static box-shadow */
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    /* Revolving green border animation */
+    .finance-tip::before {
+      content: "";
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      width: calc(100% + 4px);
+      height: calc(100% + 4px);
+      border-radius: 10px;
+      pointer-events: none;
+      background: linear-gradient(90deg, #38e93e, transparent, #38e93e, transparent);
+      background-size: 200% 200%;
+      animation: revolving-border 4s linear infinite;
+      z-index: -1;
+    }
+
+    @keyframes revolving-border {
+      0% {
+        background-position: 0% 50%;
+      }
+      100% {
+        background-position: 200% 50%;
+      }
+    }
+
+    #finance-tip-text {
+      transition: opacity 1s ease;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .finance-tip h4 {
+      margin-bottom: 8px;
+      font-weight: 700;
+      color: #38e93e;
+      font-family: Arial, Helvetica, sans-serif;
+      position: relative;
+      z-index: 1;
+    }
+  
+    /* Sponsor bar container */
+    .sponsor-bar-container {
+      position: fixed;
+      bottom: 30px;
+      left: 30px;
+      width: auto;
+      height: 80px;
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      padding: 10px 15px;
+      background: rgba(0, 0, 0, 0.9);
+      border-radius: 10px;
+      z-index: 9999;
+    }
+  
+    .sponsor-bar-container .sponsor-logo {
+      height: 60px;
+      width: auto;
+      object-fit: contain;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+  
+    .sponsor-bar-container .sponsor-logo:hover {
+      transform: scale(1.1);
+    }
+  
+    .club-logo {
+      height: 30px;
+      width: auto;
+      vertical-align: middle;
+      margin-left: 10px;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+  <body>
+  <!-- Fullscreen animation container -->
+  <div id="animation-container" class="fullscreen">
+    <canvas id="bullBearCanvas"></canvas>
+  </div>
+
+  <!-- Main homepage content, hidden initially -->
+  <div id="homepage" class="hidden">
+    <video id="background-video" autoplay muted loop class="background-video">
+    <source src="/BNB Homepage/18743334-hd_1920_1080_60fps.mp4"/>
+    </video>
+
+    <nav class="navbar">
+      <div class="logo"></div>
+      <ul class="nav-links">
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Domains</a></li>
+        <li><a href="#">Achievements</a></li>
+        <li><a href="#">Events</a></li>
+        <li><a href="#">Board</a></li>
+        <li><a href="#">Contact Us</a></li>
+      </ul>
+    </nav>
+
+    <header class="hero centered-hero">
+      <h1>Bulls and Bears</h1>
+      <h3>VIT's Premium Finance Club</h3>
+      <hr />
+  
+    </header>
+
+    <aside class="finance-tip">
+      <h4>#Finance 101</h4>
+      <p id="finance-tip-text">Beware of small expenses, small hole can sink a big ship</p>
+    </aside>
+
+    <!-- Sponsor bar container -->
+    <!-- Insert sponsor company symbols and links here in the following format:
+         <a href="https://companywebsite.com" target="_blank" rel="noopener noreferrer">
+           <img src="company-logo.png" alt="Company Name" class="sponsor-logo" />
+         </a>
+         Place the logo image files in the BNB Homepage directory or update the src path accordingly.
+    -->
+    <div id="sponsor-bar-container" class="sponsor-bar-container">
+      <a href="https://linkup.com" target="_blank" rel="noopener noreferrer">
+        <img src="/BNB Homepage/Screenshot 2025-06-07 at 7.20.11 PM.png" alt="Linkup" class="sponsor-logo" />
+      </a>
+      <a href="https://supercharge.com" target="_blank" rel="noopener noreferrer">
+        <img src="/BNB Homepage/Screenshot 2025-06-07 at 7.20.24 PM.png" alt="Supercharge" class="sponsor-logo" />
+      </a>
+      <a href="https://rbal.com" target="_blank" rel="noopener noreferrer">
+        <img src="/BNB Homepage/Screenshot 2025-06-07 at 7.20.28 PM.png" alt="RBAL" class="sponsor-logo" />
+      </a>
+      <a href="https://worldquantbrain.com" target="_blank" rel="noopener noreferrer">
+        <img src="/BNB Homepage/Screenshot 2025-06-07 at 7.21.10 PM.png" alt="WorldQuant Brain" class="sponsor-logo" />
+      </a>
+    </div>
+  </div>
+
+  <!-- Audio element for background music -->
+  <audio id="background-music" autoplay loop hidden>
+    <source src="/BNB Homepage/cash-register-kaching-sound-effect-125042.mp3" />
+  </audio>
+
+  <script>
+(() => {
+  // Quotes database for Finance 101 tips
+  const financeQuotes = [
+    "Beware of small expenses, small hole can sink a big ship",
+    "An investment in knowledge pays the best interest.",
+    "The stock market is filled with individuals who know the price of everything, but the value of nothing.",
+    "Risk comes from not knowing what you're doing.",
+    "The four most dangerous words in investing are: 'This time it's different.'",
+    "Price is what you pay. Value is what you get.",
+    "In investing, what is comfortable is rarely profitable.",
+    "The individual investor should act consistently as an investor and not as a speculator."
+  ];
+
+  // Bull and Bear collision animation on canvas
+  const bullBearCanvas = document.getElementById('bullBearCanvas');
+  const bbCtx = bullBearCanvas.getContext('2d');
+
+  let width, height;
+  function resizeCanvas() {
+    width = bullBearCanvas.width = window.innerWidth;
+    height = bullBearCanvas.height = window.innerHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  // Simple shapes representing bull and bear
+  const bull = {
+    x: width * 0.25,
+    y: height / 2,
+    size: 80,
+    color: '#00ff99',
+    speed: 5,
+  };
+
+  const bear = {
+    x: width * 0.75,
+    y: height / 2,
+    size: 80,
+    color: '#ff3300',
+    speed: 5,
+  };
+
+  function drawBull() {
+    bbCtx.fillStyle = bull.color;
+    bbCtx.beginPath();
+    bbCtx.moveTo(bull.x, bull.y);
+    bbCtx.lineTo(bull.x - bull.size, bull.y + bull.size / 2);
+    bbCtx.lineTo(bull.x - bull.size, bull.y - bull.size / 2);
+    bbCtx.closePath();
+    bbCtx.fill();
+  }
+
+  function drawBear() {
+    bbCtx.fillStyle = bear.color;
+    bbCtx.beginPath();
+    bbCtx.arc(bear.x, bear.y, bear.size / 2, 0, Math.PI * 2);
+    bbCtx.fill();
+  }
+
+  let collision = false;
+
+  function animateBullBear() {
+    bbCtx.clearRect(0, 0, width, height);
+
+    if (!collision) {
+      bull.x += bull.speed;
+      bear.x -= bear.speed;
+
+      if (bull.x + bull.size >= bear.x - bear.size / 2) {
+        collision = true;
+      }
+    }
+
+    drawBull();
+    drawBear();
+
+    if (!collision) {
+      requestAnimationFrame(animateBullBear);
+    } else {
+      // After collision, fade out animation container and show homepage
+      fadeOutAnimationContainer();
+    }
+  }
+
+  function fadeOutAnimationContainer() {
+    const container = document.getElementById('animation-container');
+    let opacity = 1;
+    const fadeInterval = setInterval(() => {
+      opacity -= 0.05;
+      container.style.opacity = opacity;
+      if (opacity <= 0) {
+        clearInterval(fadeInterval);
+        container.style.display = 'none';
+        showHomepage();
+      }
+    }, 50);
+  }
+
+  function showHomepage() {
+    const homepage = document.getElementById('homepage');
+    homepage.classList.remove('hidden');
+    startFinanceTipsRotation();
+
+    // Play background music after animation ends
+    const bgMusic = document.getElementById('background-music');
+    if (bgMusic) {
+      bgMusic.play().catch(e => {
+        // Autoplay might be blocked, handle error silently
+        console.log('Background music playback was prevented:', e);
+      });
+    }
+  }
+
+  // Finance 101 tips rotation
+  let currentTipIndex = 0;
+  const financeTipElement = document.getElementById('finance-tip-text');
+
+  function startFinanceTipsRotation() {
+    if (!financeTipElement) return;
+    setInterval(() => {
+      // Fade out
+      financeTipElement.style.opacity = 0;
+      setTimeout(() => {
+        currentTipIndex = (currentTipIndex + 1) % financeQuotes.length;
+        financeTipElement.textContent = financeQuotes[currentTipIndex];
+        // Fade in
+        financeTipElement.style.opacity = 1;
+      }, 1000); // Match the CSS transition duration
+    }, 12000); // Change tip every 12 seconds
+  }
+
+  // Start the bull and bear animation on page load
+  window.onload = () => {
+    // Set background video playback speed to 0.5x
+    const bgVideo = document.getElementById('background-video');
+    if (bgVideo) {
+      bgVideo.playbackRate = 0.5;
+    }
+    animateBullBear();
+  };
+})();
+  </script>
+</body>
+</html>

@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bulls and Bears - Premium Finance Club</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body, html {
+      height: 100%;
+      font-family: 'Playfair Display', serif;
+      background-color: #0a0f1a;
+      color: white;
+      overflow: hidden;
+    }
+
+    .background-video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+
+    .fullscreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .fullscreen img {
+      position: absolute;
+      width: 180px;
+      height: auto;
+      z-index: 11;
+      top: 50%;
+      transform: translateY(-50%);
+      opacity: 1;
+    }
+
+    #bull {
+      left: -200px;
+      animation: bullCharge 3s ease-out forwards;
+    }
+
+    #bear {
+      right: -200px;
+      animation: bearCharge 3s ease-out forwards;
+    }
+
+    @keyframes bullCharge {
+      to {
+        left: 40%;
+      }
+    }
+
+    @keyframes bearCharge {
+      to {
+        right: 40%;
+      }
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    #homepage {
+      position: relative;
+      padding: 20px 40px;
+      height: 100vh;
+      overflow: hidden;
+      background-color: #0a0f1a;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo img {
+      height: 50px;
+      width: auto;
+      cursor: pointer;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 25px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .nav-links li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links li a:hover {
+      color: #38e93e;
+    }
+
+    .hero.centered-hero {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 60vh;
+    }
+
+    .hero.centered-hero h1 {
+      font-family: 'Baskerville', serif;
+      font-size: 6rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .hero.centered-hero h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+
+    .hero hr {
+      width: 150px;
+      border: 1px solid white;
+      margin: 0 auto 40px auto;
+    }
+
+    .finance-tip {
+      position: absolute;
+      bottom: 30px;
+      right: 30px;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 15px 30px;
+      border-radius: 8px;
+      max-width: 350px;
+      font-size: 0.9rem;
+      font-style: italic;
+      color: #EEF0F2;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .finance-tip::before {
+      content: "";
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      width: calc(100% + 4px);
+      height: calc(100% + 4px);
+      border-radius: 10px;
+      pointer-events: none;
+      background: linear-gradient(90deg, #38e93e, transparent, #38e93e, transparent);
+      background-size: 200% 200%;
+      animation: revolving-border 4s linear infinite;
+      z-index: -1;
+    }
+
+    @keyframes revolving-border {
+      0% {
+        background-position: 0% 50%;
+      }
+      100% {
+        background-position: 200% 50%;
+      }
+    }
+
+    #finance-tip-text {
+      transition: opacity 1s ease;
+      position: relative;
+      z-index: 1;
+    }
+
+    .finance-tip h4 {
+      margin-bottom: 8px;
+      font-weight: 700;
+      color: #38e93e;
+      font-family: Arial, Helvetica, sans-serif;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sponsor-bar-container {
+      position: fixed;
+      bottom: 30px;
+      left: 30px;
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      padding: 10px 15px;
+      background: rgba(0, 0, 0, 0.9);
+      border-radius: 10px;
+      z-index: 9999;
+    }
+
+    .sponsor-logo {
+      height: 60px;
+      width: auto;
+      object-fit: contain;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .sponsor-logo:hover {
+      transform: scale(1.1);
+    }
+  </style>
+</head>
+<body>
+  <div id="animation-container" class="fullscreen">
+    <img id="bull" src="D6013A7C-EF73-405E-82B6-94EC115B2D88.png" alt="Bull" />
+    <img id="bear" src="Screenshot_2025-06-10_at_6.08.48_PM-removebg-preview.png" alt="Bear" />
+  </div>
+
+  <div id="homepage" class="hidden">
+    <video id="background-video" autoplay muted loop class="background-video">
+      <source src="/BNB Homepage/18743334-hd_1920_1080_60fps.mp4" />
+    </video>
+
+    <nav class="navbar">
+      <div class="logo">
+        <a href="#" onclick="location.reload()">
+          <img src="WhatsApp_Image_2025-06-10_at_15.54.20-removebg-preview.png" alt="Club Logo" />
+        </a>
+      </div>
+      <ul class="nav-links">
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Domains</a></li>
+        <li><a href="#">Achievements</a></li>
+        <li><a href="#">Events</a></li>
+        <li><a href="#">Board</a></li>
+        <li><a href="#">Contact Us</a></li>
+      </ul>
+    </nav>
+
+    <header class="hero centered-hero">
+        <h1>Bulls and Bears</h1>
+        <h3>VIT's Premium Finance Club</h3>
+        <hr />
+    
+      </header>
+
+
+    <aside class="finance-tip">
+      <h4>#Finance 101</h4>
+      <p id="finance-tip-text">Beware of small expenses, small hole can sink a big ship</p>
+    </aside>
+
+    <div class="sponsor-bar-container">
+      <a href="https://linkup.com" target="_blank">
+        <img src="/BNB Homepage/Screenshot 2025-06-07 at 7.20.11 PM.png" alt="Linkup" class="sponsor-logo" />
+      </a>
+      <a href="https://supercharge.com" target="_blank">
+        <img src="/BNB Homepage/Screenshot 2025-06-07 at 7.20.24 PM.png" alt="Supercharge" class="sponsor-logo" />
+      </a>
+      <a href="https://rbal.com" target="_blank">
+        <img src="/BNB Homepage/Screenshot 2025-06-07 at 7.20.28 PM.png" alt="RBAL" class="sponsor-logo" />
+      </a>
+      <a href="https://worldquantbrain.com" target="_blank">
+        <img src="/BNB Homepage/Screenshot 2025-06-07 at 7.21.10 PM.png" alt="WorldQuant Brain" class="sponsor-logo" />
+      </a>
+    </div>
+  </div>
+
+  <audio id="background-music" autoplay loop hidden>
+    <source src="/BNB Homepage/cash-register-kaching-sound-effect-125042.mp3" />
+  </audio>
+
+  <script>
+    window.onload = () => {
+      const bgVideo = document.getElementById('background-video');
+      if (bgVideo) bgVideo.playbackRate = 0.5;
+
+      setTimeout(() => {
+        const container = document.getElementById('animation-container');
+        container.style.transition = 'opacity 1s ease';
+        container.style.opacity = 0;
+
+        setTimeout(() => {
+          container.style.display = 'none';
+          document.getElementById('homepage').classList.remove('hidden');
+
+          const bgMusic = document.getElementById('background-music');
+          if (bgMusic) {
+            bgMusic.play().catch(err => console.log('Autoplay blocked:', err));
+          }
+
+          startFinanceTipsRotation();
+        }, 1000);
+      }, 3200);
+    };
+
+    const financeQuotes = [
+      "Beware of small expenses, small hole can sink a big ship",
+      "An investment in knowledge pays the best interest.",
+      "The stock market is filled with individuals who know the price of everything, but the value of nothing.",
+      "Risk comes from not knowing what you're doing.",
+      "The four most dangerous words in investing are: 'This time it's different.'",
+      "Price is what you pay. Value is what you get.",
+      "In investing, what is comfortable is rarely profitable.",
+      "The individual investor should act consistently as an investor and not as a speculator."
+    ];
+
+    let currentTipIndex = 0;
+    const financeTipElement = document.getElementById('finance-tip-text');
+
+    function startFinanceTipsRotation() {
+      if (!financeTipElement) return;
+      setInterval(() => {
+        financeTipElement.style.opacity = 0;
+        setTimeout(() => {
+          currentTipIndex = (currentTipIndex + 1) % financeQuotes.length;
+          financeTipElement.textContent = financeQuotes[currentTipIndex];
+          financeTipElement.style.opacity = 1;
+        }, 1000);
+      }, 12000);
+    }
+  </script>
+</body>
+</html>
